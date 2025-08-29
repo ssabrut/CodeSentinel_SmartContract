@@ -19,7 +19,7 @@ contract Voting {
     event ProposalCreated(uint _proposalId);
     event Vote(uint _proposalId, address indexed voters);
 
-    constructor() {
+    constructor() payable  {
         owner = msg.sender;
     }
 
