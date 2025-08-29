@@ -16,7 +16,6 @@ contract Voting {
 
     struct Voter {
         bool voted;
-        address delegate;
         uint vote;
     }
 
@@ -37,5 +36,11 @@ contract Voting {
             name: _name,
             voteCount: 0
         }));
+    }
+
+    function vote(uint _proposal) public isAlreadyVoted(msg.sender) {
+        voters[msg.sender].voted = true;
+        voters[msg.sender].vote = _proposal;
+        proposals[_proposal].voteCount += 1;
     }
 }
