@@ -5,7 +5,6 @@ contract Voting {
     address public owner;
 
     struct Voter {
-        uint weight;
         bool voted;
         address delegate;
         uint vote;
@@ -15,6 +14,10 @@ contract Voting {
         string name;
         uint voteCount;
     }
+
+    mapping(address => Voter) public voters;
+    mapping(address => bool) public members;
+    Proposal[] public proposals;
 
     constructor() {
         owner = msg.sender;
