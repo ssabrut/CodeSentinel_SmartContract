@@ -24,11 +24,11 @@ contract Voting {
     }
 
     function addProposal(string memory _name) public onlyOwner {
+        uint proposalId = proposals.length > 0 ? proposals.length - 1 : 0;
         Proposal storage proposal = proposals.push();
         proposal.name = _name;
-        proposal.voteCount = 0;
 
-        emit ProposalCreated(proposals.length - 1);
+        emit ProposalCreated(proposalId);
     }
 
     function voteProposal(uint _proposalId) public {
