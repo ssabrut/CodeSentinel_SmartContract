@@ -9,38 +9,24 @@ contract Voting {
         _;
     }
 
-    modifier isAlreadyVoted(address _voter) {
-        require(!voters[_voter].voted, "The user already voted!");
-        _;
-    }
-
-    struct Voter {
-        bool voted;
-        uint vote;
-    }
-
     struct Proposal {
         string name;
         uint voteCount;
+        address[] voters;
     }
 
-    mapping(address => Voter) internal voters;
-    Proposal[] internal proposals;
+    Proposal[] public proposals;
+    event ProposalCreated(uint _proposalId);
 
     constructor() {
         owner = msg.sender;
     }
 
     function addProposal(string memory _name) public onlyOwner {
-        proposals.push(Proposal({
-            name: _name,
-            voteCount: 0
-        }));
-    }
+        Proposal storage proposal = proposals.push();
+        proposal.name = _name;
+        proposal.voteCount = 0;
 
-    function vote(uint _proposal) public isAlreadyVoted(msg.sender) {
-        voters[msg.sender].voted = true;
-        voters[msg.sender].vote = _proposal;
-        proposals[_proposal].voteCount += 1;
+        emit ProposalCreated(proposals.length - 1);
     }
 }
