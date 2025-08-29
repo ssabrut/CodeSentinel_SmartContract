@@ -4,6 +4,16 @@ pragma solidity ^0.8.27;
 contract Voting {
     address public owner;
 
+    modifier onlyOwner() {
+        require(owner == msg.sender, "Only owner can call this function");
+        _;
+    }
+
+    modifier isAlreadyVoted(address _voter) {
+        require(!voters[_voter].voted, "The user already voted!");
+        _;
+    }
+
     struct Voter {
         bool voted;
         address delegate;
@@ -15,11 +25,17 @@ contract Voting {
         uint voteCount;
     }
 
-    mapping(address => Voter) public voters;
-    mapping(address => bool) public members;
-    Proposal[] public proposals;
+    mapping(address => Voter) internal voters;
+    Proposal[] internal proposals;
 
     constructor() {
         owner = msg.sender;
+    }
+
+    function addProposal(string memory _name) public onlyOwner {
+        proposals.push(Proposal({
+            name: _name,
+            voteCount: 0
+        }));
     }
 }
