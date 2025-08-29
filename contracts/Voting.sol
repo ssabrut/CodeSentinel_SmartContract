@@ -12,11 +12,12 @@ contract Voting {
     struct Proposal {
         string name;
         uint voteCount;
-        address[] voters;
+        mapping(address => bool) voters;
     }
 
     Proposal[] public proposals;
     event ProposalCreated(uint _proposalId);
+    event Vote(uint _proposalId, address indexed voters);
 
     constructor() {
         owner = msg.sender;
@@ -28,5 +29,15 @@ contract Voting {
         proposal.voteCount = 0;
 
         emit ProposalCreated(proposals.length - 1);
+    }
+
+    function voteProposal(uint _proposalId) public {
+        Proposal storage proposal = proposals[_proposalId];
+        require(!proposal.voters[msg.sender], "The user already voted!");
+
+        proposal.voteCount++;
+        proposal.voters[msg.sender] = true;
+
+        emit Vote(_proposalId, msg.sender);
     }
 }
